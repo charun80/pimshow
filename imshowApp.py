@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import QApplication
 
 import threading
 import numpy as np
-from enum import Enum, unique
+#from enum import Enum, unique
 
 
 
@@ -39,15 +39,6 @@ class ImageViewerApplication(QApplication):
     
     def destroyWindow(self):
         self.appWindow = None
-        
-
-@unique
-class ViewerState(Enum):
-    NOT_STARTED = 0
-    RUNNING     = 10
-    FINISHED    = 100
-    ERROR       = 200
-    DESTROYED   = 1000
 
 
 
@@ -56,16 +47,22 @@ class BaseImageViewer(threading.Thread):
     mViewerWindow = None
     mAppArgs = None
     
-    mViewerState = ViewerState.NOT_STARTED
+    mViewerWindowOpened = None
+    mViewerWindowClosed = None
+    
     mFrameCounter = None
     
     
     def __init__(self, ViewerName):
         super(BaseImageViewer, self).__init__()
-        self.mViewerState = ViewerState.NOT_STARTED
         self.mAppArgs = [ViewerName]
         self.mOptActions = []
         self.mFrameCounter = 0
+        
+        self.mViewerWindowOpened = threading.Event()
+        self.mViewerWindowOpened.clear()
+        self.mViewerWindowClosed = threading.Event()
+        self.mViewerWindowClosed.clear()    
     
     
     def __del__(self):
@@ -78,40 +75,59 @@ class BaseImageViewer(threading.Thread):
             lApplication.startup( self.mOptActions )
             
             self.mViewerWindow = lApplication.appWindow
-            self.mViewerState = ViewerState.RUNNING
+            self.mViewerWindowOpened.set()
             
             lApplication.exec_()
-        except:
-            self.mViewerState = ViewerState.ERROR
-            raise
         finally:
-            self.mViewerWindow = None
-            if self.mViewerState is not ViewerState.ERROR:
-                self.mViewerState = ViewerState.FINISHED
+            self.mViewerWindowClosed.set()
+            self.mViewerWindowOpened.set()
             
-            lApplication.destroyWindow()
-            lApplication = None
+            #self.mViewerWindow = None            
+            #lApplication.destroyWindow()
+            #lApplication = None
+    
+    
+    def waitUntilAvailable(self, timeout = None):
+        self.mViewerWindowOpened.wait( timeout )
+        return ( not self.mViewerWindowClosed.is_set() )
+    
+    
+    def isAvailable(self):
+        return ( self.mViewerWindowOpened.is_set() and (not self.mViewerWindowClosed.is_set()) )
     
     
     def resizeViewer(self, width, height ):
-        if self.mViewerState is ViewerState.RUNNING:
+        if self.isAvailable():
             self.mViewerWindow.resizeSignal.emit(width,height)
+            return True
+        else:
+            return False
     
     
     def addImage(self, npyImg):
         img = ImageFrame( npyImg )
         
-        if self.mViewerState is ViewerState.RUNNING:
+        if self.isAvailable():
             self.mFrameCounter += 1
             self.mViewerWindow.newImageSignal.emit(img)
+            return True
+        else:
+            return False
 
 
 
 class SimpleImageViewer(BaseImageViewer):
 
+    def __init__(self, ViewerName):
+        super(SimpleImageViewer, self).__init__(ViewerName)
+        self.start()
+        self.waitUntilAvailable()
     
     
     def runIterator( self, imgIter, delay=0 ):
-        pass
+        for img in imgIter:
+            res = self.addImage( img )
+            if not res:
+                break
     
     

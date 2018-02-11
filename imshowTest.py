@@ -22,12 +22,11 @@ img_list.sort()
 
 def main():
     app = SimpleImageViewer("ImageViewerTest")
-    app.start()
-    
+    #app.start()
+    app.resizeViewer(1000,800)
     
     for i in range(10):
         time.sleep(1)
-        app.resizeViewer(1000,800)
         app.addImage( np.empty((100,100,3), dtype=np.uint8) )
     
     app.join()    
