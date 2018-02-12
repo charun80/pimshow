@@ -204,7 +204,7 @@ class AbstractImshowWindow(QMainWindow):
 
 
     def toggleFullScreen(self):
-        if self.fulls_act.isChecked():
+        if self.mActions.FScreen.value.isChecked():
             Logger.debug("toggleFullScreen::FullScreen")
             self.showFullScreen()
         else:
