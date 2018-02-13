@@ -5,7 +5,7 @@ Created on Sat Feb 10 16:13:23 2018
 @author: Matthias Höffken
 """
 
-__all__ = ["MainImshowWindow", "imshowFeature"]
+__all__ = ["MainImshowWindow", "imshowFeature", "viewerResponse", "viewerCommands", "viewerErrors"]
 
 from PyQt5.QtCore import pyqtSignal
 from abstractImshowWindow import AbstractImshowWindow, imshowFeature
@@ -17,12 +17,20 @@ from collections import deque
 
 
 #@unique
-#class viewerCommands(imshowFeature):
+#class viewerResponse(imshowFeature):
 #    pass
 
-viewerCommands = Enum('viewerCommands', \
+viewerResponse = Enum('viewerResponse', \
                       [(i.name, i.value) for i in imshowFeature ] \
-                      + [ ("FINISH", -1) ])
+                      + [ ("OK", True),
+                          ("FINISHED", -1),\
+                          ("WINDOW_NOT_AVAILABLE", -10) ])
+
+
+viewerCommands = frozenset( [ viewerResponse[m] for m in imshowFeature.__members__.keys() ] )
+viewerErrors = frozenset([ viewerResponse.WINDOW_NOT_AVAILABLE ])
+
+
 
 
 class MainImshowWindow(AbstractImshowWindow):
@@ -31,12 +39,12 @@ class MainImshowWindow(AbstractImshowWindow):
     
     
     mCurImage = None
-    mCommandQueue = None
+    mResponseQueue = None
     
     
     def __init__(self, parent, optActions ):
         super(MainImshowWindow,self).__init__(parent, optActions)
-        self.mCommandQueue = deque(maxlen=1)
+        self.mResponseQueue = deque(maxlen=1)
         
         self.newImageSignal.connect( self.onNewImageAvailable )
         self.resizeSignal.connect( self.resize )
@@ -51,22 +59,22 @@ class MainImshowWindow(AbstractImshowWindow):
         return self.mCurImage.getPixmapImage()
     
     
-    def getCommandQueue(self):
-        return self.mCommandQueue
+    def getResponseQueue(self):
+        return self.mResponseQueue
     
     
     def triggerFinish(self):
-        self.getCommandQueue().append( viewerCommands.FINISH )
+        self.getResponseQueue().append( viewerResponse.FINISHED )
     
     def triggerNext(self):
-        self.getCommandQueue().append( viewerCommands.NEXT )
+        self.getResponseQueue().append( viewerResponse.NEXT )
     
     def triggerPrev(self):
-        self.getCommandQueue().append( viewerCommands.PREV )
+        self.getResponseQueue().append( viewerResponse.PREV )
     
     def triggerForwStartStop(self):
-        self.getCommandQueue().append( viewerCommands.STARTSTOP )
+        self.getResponseQueue().append( viewerResponse.STARTSTOP )
 
     def triggerBackStartStop(self):
-        self.getCommandQueue().append( viewerCommands.BACK_STARTSTOP )
+        self.getResponseQueue().append( viewerResponse.BACK_STARTSTOP )
     
