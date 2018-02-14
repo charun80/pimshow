@@ -26,10 +26,10 @@ Logger.setLevel("DEBUG")
 
 @unique
 class imshowFeature(Enum):
-    NEXT = 1
-    PREV = 2
-    STARTSTOP = 3
-    BACK_STARTSTOP = 4
+    NEXT = "next frame"
+    PREV = "previous frame"
+    STARTSTOP = "start/stop forward playing sequence"
+    BACK_STARTSTOP = "start/stop backward playing sequence"
 
 
 

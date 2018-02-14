@@ -8,7 +8,7 @@ Created on Sat Feb 10 14:54:11 2018
 imgDir = "/home/otto/Downloads/datasets/DaimlerBenchmark/SceneLabeling/train_1/imgleft"
 
 
-from imshowApp import SimpleImageViewer
+from imshowViewer import SimpleImageViewer
 import threading
 import time
 import os
@@ -25,9 +25,10 @@ def imgIter( imgDir ):
     img_list = glob(os.path.join( imgDir, '*.png'))
     img_list.sort()
     
-    for path in img_list:
-        img = cv2.imread( path )
-        yield img.astype(np.float8)
+    while True:
+        for path in img_list:
+            img = cv2.imread( path )
+            yield img.astype(np.uint8)
 
 
 def main():

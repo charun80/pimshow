@@ -22,9 +22,9 @@ from collections import deque
 
 viewerResponse = Enum('viewerResponse', \
                       [(i.name, i.value) for i in imshowFeature ] \
-                      + [ ("OK", True),
-                          ("FINISHED", -1),\
-                          ("WINDOW_NOT_AVAILABLE", -10) ])
+                      + [ ("OK", "Viewer state is ok"),
+                          ("FINISHED", "Viewer is finished"),\
+                          ("WINDOW_NOT_AVAILABLE", "ERROR: Viewer window seems not available (anymore)") ])
 
 
 viewerCommands = frozenset( [ viewerResponse[m] for m in imshowFeature.__members__.keys() ] )
