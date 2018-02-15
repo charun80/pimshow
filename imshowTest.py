@@ -8,7 +8,7 @@ Created on Sat Feb 10 14:54:11 2018
 imgDir = "/home/otto/Downloads/datasets/DaimlerBenchmark/SceneLabeling/train_1/imgleft"
 
 
-from imshowViewer import SimpleImageViewer
+from imshowViewer import ImageIteratorViewer
 import threading
 import time
 import os
@@ -33,7 +33,7 @@ def imgIter( imgDir ):
 
 def main():
     
-    app = SimpleImageViewer("ImageViewerTest", imgIter(imgDir) )
+    app = ImageIteratorViewer( imgIter(imgDir), "ImageViewerTest" )
     #time.sleep(1)
     app.process()
     #app.start()

@@ -6,7 +6,7 @@ Created on Tue Feb 13 20:15:55 2018
 """
 
 
-__all__ = ["SimpleImageViewer"]
+__all__ = ["ImageIteratorViewer"]
 
 from imshowApp import ImageViewerThread
 from imshowWindow import viewerCommands, viewerErrors, viewerResponse, imshowFeature
@@ -68,13 +68,13 @@ import time
 viewerCommandsAndOk = viewerCommands.union( frozenset([viewerResponse.OK]) )
 
 
-class SimpleImageViewer(BaseImageViewer):
+class ImageIteratorViewer(BaseImageViewer):
     
     mImgIter = None
     
     
-    def __init__(self, ViewerName, imgIter ):
-        super(SimpleImageViewer, self).__init__([imshowFeature.NEXT, imshowFeature.STARTSTOP])
+    def __init__(self, imgIter, WindowName ):
+        super(ImageIteratorViewer, self).__init__([imshowFeature.NEXT, imshowFeature.STARTSTOP])
         self.mImgIter = iter(imgIter)
     
     
