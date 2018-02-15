@@ -7,7 +7,7 @@ Created on Sat Feb 10 20:15:31 2018
 
 __all__ = ["ImageFrame"]
 
-from PyQt5.QtGui import QImage, QPixmap
+from QtProxy import QImage, QImage2QPixmap_OutsideGui, QImage2QPixmap_InsideGui
 import numpy as np
 
 
@@ -20,10 +20,10 @@ class ImageFrame(object):
     def __init__(self, npyImage):
         self.mNpyImage = npyImage
         qImage = self.toQImage( npyImage )
-        self.mPixmapImage = QPixmap.fromImage( qImage )
+        self.mPixmapImage = QImage2QPixmap_OutsideGui( qImage )
     
     def getPixmapImage(self):
-        return self.mPixmapImage
+        return QImage2QPixmap_InsideGui( self.mPixmapImage )
 
     @staticmethod
     def toQImage(img):

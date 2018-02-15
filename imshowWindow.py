@@ -7,7 +7,7 @@ Created on Sat Feb 10 16:13:23 2018
 
 __all__ = ["MainImshowWindow", "imshowFeature", "viewerResponse", "viewerCommands", "viewerErrors"]
 
-from PyQt5.QtCore import pyqtSignal
+from QtProxy import QtCore
 from abstractImshowWindow import AbstractImshowWindow, imshowFeature
 from imshowTools import ImageFrame
 
@@ -34,8 +34,8 @@ viewerErrors = frozenset([ viewerResponse.WINDOW_NOT_AVAILABLE ])
 
 
 class MainImshowWindow(AbstractImshowWindow):
-    newImageSignal = pyqtSignal(ImageFrame, name='newImage')
-    resizeSignal = pyqtSignal( int, int, name='resize')
+    newImageSignal = QtCore.Signal(ImageFrame, name='newImage')
+    resizeSignal = QtCore.Signal( int, int, name='resize')
     
     
     mCurImage = None
@@ -50,6 +50,7 @@ class MainImshowWindow(AbstractImshowWindow):
         self.resizeSignal.connect( self.resize )
     
     
+    @QtCore.Slot(ImageFrame)
     def onNewImageAvailable(self, img ):
         self.mCurImage = img
         self.updateImage()
@@ -62,19 +63,23 @@ class MainImshowWindow(AbstractImshowWindow):
     def getResponseQueue(self):
         return self.mResponseQueue
     
-    
+    @QtCore.Slot()
     def triggerFinish(self):
         self.getResponseQueue().append( viewerResponse.FINISHED )
     
+    @QtCore.Slot()
     def triggerNext(self):
         self.getResponseQueue().append( viewerResponse.NEXT )
-    
+
+    @QtCore.Slot()
     def triggerPrev(self):
         self.getResponseQueue().append( viewerResponse.PREV )
-    
+
+    @QtCore.Slot()
     def triggerForwStartStop(self):
         self.getResponseQueue().append( viewerResponse.STARTSTOP )
 
+    @QtCore.Slot()
     def triggerBackStartStop(self):
         self.getResponseQueue().append( viewerResponse.BACK_STARTSTOP )
     

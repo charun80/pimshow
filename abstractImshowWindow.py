@@ -14,8 +14,8 @@ from enum import Enum, unique
 
 from imshowView import ImageView
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsPixmapItem, QMenu, QFileDialog, QAction, QMessageBox
+from QtProxy import Qt, QtCore
+from QtProxy import QMainWindow, QGraphicsScene, QGraphicsPixmapItem, QMenu, QFileDialog, QAction, QMessageBox
 
 
 # Logging
@@ -144,7 +144,7 @@ class AbstractImshowWindow(QMainWindow):
 
 
     ## Actions
-    
+    @QtCore.Slot()
     def updateImage(self):
         if self.mActions.Fit.value.isChecked():
             self.updateImageWithBestFit()
@@ -174,12 +174,14 @@ class AbstractImshowWindow(QMainWindow):
             self.mImgView.centerOn(pixitem)
     
     
+    @QtCore.Slot()
     def doExit(self):
         try:
             self.triggerFinish()
         finally:
             self.mExit()
     
+    @QtCore.Slot()
     def doClose(self):
         try:
             self.triggerFinish()
@@ -187,22 +189,28 @@ class AbstractImshowWindow(QMainWindow):
             self.close()
     
     
+    @QtCore.Slot()
     def triggerFinish(self):
         Logger.debug("triggerFinish::stub")
     
+    @QtCore.Slot()
     def triggerNext(self):
         Logger.debug("triggerNext::stub")
     
+    @QtCore.Slot()
     def triggerPrev(self):
         Logger.debug("triggerPrev::stub")
     
+    @QtCore.Slot()
     def triggerForwStartStop(self):
         Logger.debug("triggerForwStartStop::stub")
 
+    @QtCore.Slot()
     def triggerBackStartStop(self):
         Logger.debug("triggerBackStartStop::stub")
 
 
+    @QtCore.Slot()
     def toggleFullScreen(self):
         if self.mActions.FScreen.value.isChecked():
             Logger.debug("toggleFullScreen::FullScreen")
@@ -212,7 +220,7 @@ class AbstractImshowWindow(QMainWindow):
             self.showNormal()
 
 
-
+    @QtCore.Slot()
     def saveImage(self):
         Logger.debug("save_img")
         fname = QFileDialog.getSaveFileName(self, 'Save your image')[0]

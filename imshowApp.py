@@ -11,8 +11,8 @@ __all__ = ["ImageViewerThread"]
 
 from imshowWindow import MainImshowWindow
 
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import pyqtSignal
+from QtProxy import QApplication
+from QtProxy import QtCore
 
 import threading
 from Queue import Queue
@@ -28,7 +28,7 @@ class ImageViewerApplication(QApplication):
     # Here will be the singleton instance stored.
     __instance = None
     
-    createWindowSignal = pyqtSignal(tuple, name='createWindow')
+    createWindowSignal = QtCore.Signal(tuple, name='createWindow')
     
     mWindowQueue = None
     
@@ -45,7 +45,7 @@ class ImageViewerApplication(QApplication):
         self.mWindowQueue = Queue()
         self.createWindowSignal.connect(self.__createNewWindow)
 
-    
+    @QtCore.Slot(tuple)
     def __createNewWindow(self, windowArgs):
         try:
             imshowWindow = MainImshowWindow(self, windowArgs)

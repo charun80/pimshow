@@ -8,8 +8,8 @@ Created on Sat Feb 10 14:48:35 2018
 __all__ = ["ImageView"]
 
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGraphicsView, QFrame
+from QtProxy import Qt
+from QtProxy import QGraphicsView, QFrame
 
 
 
