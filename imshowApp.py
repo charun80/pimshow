@@ -85,7 +85,7 @@ class ImageViewerThread(threading.Thread):
         """ Virtually private constructor. """
         super(ImageViewerThread, self).__init__(target=self.__run)
         
-        if ImageViewerThread.__instance != None:
+        if ImageViewerThread.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
             ImageViewerThread.__instance = self        
